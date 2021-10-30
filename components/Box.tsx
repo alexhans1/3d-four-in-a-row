@@ -30,7 +30,7 @@ export default function BoxComponent({
       args={[1, 1, 1]}
       {...props}
       ref={mesh}
-      onClick={(e: React.MouseEvent) => {
+      onClick={(e) => {
         if (!color) {
           const newCube = [...cube]
           const [x, y, z] = index
