@@ -6,13 +6,13 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Box from '../components/Box'
 
-const boxSize = 2
+const boxSize = 2.4
 const cubeSize = 4
-interface Box {
-  color?: 0 | 1
+export interface Box {
+  color?: string
   position: [number, number, number]
 }
-type Cube = Box[][][]
+export type Cube = Box[][][]
 const _initialBoxes: Cube = Array(cubeSize).fill(
   Array(cubeSize).fill(Array(cubeSize).fill({}))
 )
@@ -22,9 +22,9 @@ const initialBoxes: Cube = _initialBoxes.map((rows, i) =>
       return {
         ...box,
         position: [
-          i * boxSize - boxSize,
-          j * boxSize - boxSize,
-          k * boxSize - boxSize,
+          i * boxSize - boxSize - boxSize / 2,
+          j * boxSize - boxSize - boxSize / 2,
+          k * boxSize - boxSize - boxSize / 2,
         ],
       }
     })
@@ -34,6 +34,7 @@ const initialBoxes: Cube = _initialBoxes.map((rows, i) =>
 const Home: NextPage = () => {
   const [turn, setTurn] = useState<0 | 1>(0)
   const [cube, setCube] = useState(initialBoxes)
+
   return (
     <div className={styles.container}>
       <Head>
@@ -52,8 +53,8 @@ const Home: NextPage = () => {
               lines.map((box, k) => (
                 <Box
                   key={`box${i}${j}${k}`}
-                  turn={turn}
-                  setTurn={setTurn}
+                  index={[i, j, k]}
+                  {...{ turn, setTurn, cube, setCube }}
                   {...box}
                 />
               ))
