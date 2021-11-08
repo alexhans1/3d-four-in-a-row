@@ -1,51 +1,39 @@
-import React, { SetStateAction, Dispatch, useRef } from 'react'
+import React, { useRef } from 'react'
 import { Box as NativeBox } from '@react-three/drei'
-import { Box, Cube } from '../pages'
-
-const colors = ['#fa0d0a', '#408020']
-
-interface Props extends Box {
-  turn: 0 | 1
-  setTurn: Dispatch<SetStateAction<0 | 1>>
-  cube: Cube
-  setCube: Dispatch<SetStateAction<Cube>>
-  index: [number, number, number]
-}
+import { Box, Position } from '../pages'
+import { ThreeEvent } from '@react-three/fiber'
 
 const defaultColors = ['#d7e4ec', '#b0bec7']
 
+interface Props extends Box {
+  index: [number, number, number]
+  handleBoxClick: (
+    position: Position,
+    color?: string | undefined
+  ) => (e: ThreeEvent<MouseEvent>) => void
+}
+
 export default function BoxComponent({
-  turn,
-  setTurn,
-  cube,
-  setCube,
   color,
   index,
+  handleBoxClick,
   ...props
 }: Props) {
   const mesh = useRef()
 
   return (
-    <NativeBox
-      args={[1, 1, 1]}
-      {...props}
-      ref={mesh}
-      onClick={(e) => {
-        if (!color) {
-          const newCube = [...cube]
-          const [x, y, z] = index
-          newCube[x][y][z].color = colors[turn]
-          setCube(newCube)
-
-          setTurn(turn ? 0 : 1)
-        }
-        e.stopPropagation()
-      }}
-    >
-      <meshStandardMaterial
-        attach="material"
-        color={color || defaultColors[index.reduce((a, b) => a + b) % 2]}
-      />
-    </NativeBox>
+    <>
+      <NativeBox
+        args={[1, 1, 1]}
+        {...props}
+        ref={mesh}
+        onClick={handleBoxClick(index, color)}
+      >
+        <meshStandardMaterial
+          attach="material"
+          color={color || defaultColors[index.reduce((a, b) => a + b) % 2]}
+        />
+      </NativeBox>
+    </>
   )
 }
